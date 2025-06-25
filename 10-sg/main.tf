@@ -43,7 +43,7 @@ resource "aws_security_group_rule" "bastion_laptop" {
     security_group_id = module.bastion.sg_id
 }
 
-# giving connection from bastion to alb by creating the security group for backend-alb and allowing only  port 80 and also sg-id of bastion to alb as the incoming traffic
+# giving connection from bastion to alb by creating the security group for backend-alb and allowing only port 80 and also sg-id of bastion to alb as the incoming traffic
 resource "aws_security_group_rule" "backend_alb_bastion" {
     type = "ingress" 
     from_port = 80 # allowing port 80 as incoming traffic
