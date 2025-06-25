@@ -4,7 +4,7 @@ resource "aws_instance" "bastion" {
     vpc_security_group_ids = [local.bastion_sg_id]
     subnet_id = local.public_subnet_id
     tags = merge (
-        var.common_tags,
+        local.common_tags,
         {
             Name = "${var.project}-${var.environment}-basiton"
         }
