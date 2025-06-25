@@ -1,10 +1,10 @@
 ## here calling the terraform-aws-security-group-module inorder to reuse the code
 # here source is taking the code terraform-aws-security-group-module in github
  
- ## input
+ ## inputs
  project (required)
  environment (required)
-
+ vpc_id (mandatory) --> it should be taken from 00-vpc where it is stored in ssm_parameter store in aws
 
 ## output
 10-sg needs the vpc_id as input so getting the vpc_id as input using data source by calling the name of the ssm_parameter where the vpc id is stored in aws then using that vpc_id as input here 
