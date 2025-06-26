@@ -15,3 +15,9 @@ resource "aws_ssm_parameter" "backend_alb_sg_id" {
   type  = "String"
   value = module.backend_alb.sg_id  # getting the .sg_id from output exposed from terraform-aws-security-group-module and calling the backend-alb module
 }
+
+resource "aws_ssm_parameter" "openvpn_sg_id" {
+  name = "/${var.project}/${var.environment}/openvpn_sg_id"
+  type  = "String"
+  value = module.openvpn.sg_id
+}
