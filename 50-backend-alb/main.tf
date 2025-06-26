@@ -1,12 +1,12 @@
 #roboshop-dev-backend-alb
 module "alb" {
-    source = "terraform-aws-modules/alb/aws"
-    version = "9.16.0"
+    source = "terraform-aws-modules/alb/aws" # teking the module from terraform_aws_alb documentation
+    version = "9.16.0" # giving the version from terraform_aws_alb bcoz in provider version is diff and here it is diff to make compatible adding that module specific version here so either change version in provider or specify version here
     internal = true # means this load balancer will be create in private subnet only. internal = false means it will create in public subnet
     name = "${var.project}-${var.environment}-backend-alb"
     vpc_id = local.vpc_id
-    subnets = local.private_subnet_ids # creating the alb in private subnet
-    security_groups = [local.backend_alb_sg_id]  # getting the backend sg id from 10-sg bcoz in 10-sg it is created
+    subnets = local.private_subnet_ids # creating the alb in private subnet bcoz this is for backend and backend should be in private subnet
+    security_groups = [local.backend_alb_sg_id]  # getting the backend sg id from 10-sg bcoz in 10-sg only sg-id will be created
     tags = merge (
        local.common_tags,
         {

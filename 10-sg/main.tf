@@ -44,6 +44,8 @@ resource "aws_security_group_rule" "bastion_laptop" {
 }
 
 # giving connection from bastion to alb by creating the security group for backend-alb and allowing only port 80 and also sg-id of bastion to alb as the incoming traffic
+# bcoz for load balancer incoming traffic of port 80 only will be allowed in order to get trrafic from outside we are using the sg-id of bastion bcoz this bastion will be in public subnet 
+# from laptop --> bastion server (created in public subnet) --> load balancer (created in private subnet)
 resource "aws_security_group_rule" "backend_alb_bastion" {
     type = "ingress" 
     from_port = 80 # allowing port 80 as incoming traffic
