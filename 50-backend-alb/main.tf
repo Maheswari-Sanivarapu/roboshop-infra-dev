@@ -3,7 +3,7 @@ module "alb" {
     source = "terraform-aws-modules/alb/aws" # teking the module from terraform_aws_alb documentation
     version = "9.16.0" # giving the version from terraform_aws_alb bcoz in provider version is diff and here it is diff to make compatible adding that module specific version here so either change version in provider or specify version here
     internal = true # means this load balancer will be create in private subnet only. internal = false means it will create in public subnet
-    #enable_deletion_protection = true
+    enable_deletion_protection = true
     name = "${var.project}-${var.environment}-backend-alb"
     vpc_id = local.vpc_id
     subnets = local.private_subnet_ids # creating the alb in private subnet bcoz this is for backend and backend should be in private subnet
