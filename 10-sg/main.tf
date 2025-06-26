@@ -33,6 +33,15 @@ module "backend_alb" {
     vpc_id = local.vpc_id
 }
 
+module "openvpn" {
+    source ="git::https://github.com/mahi2298/terraform-aws-security-group-module.git?ref=main"
+    project = var.project
+    environment = var.environment
+    sg_name = "openvpn"
+    sg_description = "for openvpn connection"
+    vpc_id = local.vpc_id
+}
+
 # giving connection from laptop to bastion by creating the security group for basiton and allowing only incoming traffic on port 22 for bastion
 resource "aws_security_group_rule" "bastion_laptop" {
     type = "ingress"
@@ -53,4 +62,41 @@ resource "aws_security_group_rule" "backend_alb_bastion" {
     protocol = "tcp"
     source_security_group_id = module.bastion.sg_id # taking the sg id of bastion and attaching it to to backend-alb as incoming traffic
     security_group_id = module.backend_alb.sg_id # backend-alb security id
+}
+
+#vpn ports are 22,443,1194,943
+resource "aws_security_group_rule" "vpn_ssh" {
+    type = "ingress"
+    from_port = 22
+    to_port = 22
+    protocol = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+    security_group_id = module.openvpn.sg_id
+}
+
+resource "aws_security_group_rule" "vpn_https" {
+    type = "ingress"
+    from_port = 443
+    to_port = 443
+    protocol = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+    security_group_id = module.openvpn.sg_id
+}
+
+resource "aws_security_group_rule" "vpn_1194" {
+    type = "ingress"
+    from_port = 1194
+    to_port = 1194
+    protocol = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+    security_group_id = module.openvpn.sg_id
+}
+
+resource "aws_security_group_rule" "vpn_943" {
+    type = "ingress"
+    from_port = 943
+    to_port = 943
+    protocol = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+    security_group_id = module.openvpn.sg_id
 }

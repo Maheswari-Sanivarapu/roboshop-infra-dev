@@ -14,3 +14,17 @@ module "alb" {
         }
     )
 }
+
+resource "aws_lb_listener" "listener" {
+    load_balancer_arn = module.alb.arn
+    port = "80"
+    protocol = "HTTP"
+    default_action {
+        type = "fixed-response"
+        fixed_response {
+            content_type = "text/plain"
+            message_body = "<h1>I'm From ALB</h1>"
+            status_code  = "200"
+        }
+    }
+}
