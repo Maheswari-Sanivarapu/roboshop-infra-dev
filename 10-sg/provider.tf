@@ -8,7 +8,7 @@ terraform {
  backend "s3"{
     bucket = "mahi-s3-bucket-dev"
     #bucket = "mahi-s3-bucket-dev-1"
-    key = "remote-state-dev"
+    key = "remote-state-dev-sg"
     region = "us-east-1"
     #region = "ap-south-1"
     encrypt = true 
