@@ -4,6 +4,7 @@ module "vpc" {
     environment = var.environment
     public_subnet_cidr = var.public_subnet_cidr
     private_subnet_cidr = var.private_subnet_cidr
+    database_private_subnet_cidr = var.database_subnet_cidr
     is_vpc_peering = true
 }
 
@@ -18,4 +19,8 @@ output "public_subnet" {
 
 output "private_subnet" {
     value = module.vpc.private_subnet_id # here taking the private_subnet_id exposed from terraform-aws-vpc-module--> output.tf and calling it as private_subnet_id
+}
+
+output "database_subnet" {
+    value = module.vpc.database_subnet_id # here taking the database_subnet_id exposed from terraform-aws-vpc-module--> output.tf and calling it as private_subnet_id
 }

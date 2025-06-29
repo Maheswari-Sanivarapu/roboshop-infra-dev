@@ -42,6 +42,42 @@ module "openvpn" {
     vpc_id = local.vpc_id
 }
 
+module "mongodb" {
+    source ="git::https://github.com/mahi2298/terraform-aws-security-group-module.git?ref=main"
+    project = var.project
+    environment = var.environment
+    sg_name = "mongodb"
+    sg_description = "for mongodb connection"
+    vpc_id = local.vpc_id
+}
+
+module "redis" {
+    source ="git::https://github.com/mahi2298/terraform-aws-security-group-module.git?ref=main"
+    project = var.project
+    environment = var.environment
+    sg_name = "redis"
+    sg_description = "for redis connection"
+    vpc_id = local.vpc_id
+}
+
+module "mysql" {
+    source ="git::https://github.com/mahi2298/terraform-aws-security-group-module.git?ref=main"
+    project = var.project
+    environment = var.environment
+    sg_name = "mysql"
+    sg_description = "for mysql connection"
+    vpc_id = local.vpc_id
+}
+
+module "rabbitmq" {
+    source ="git::https://github.com/mahi2298/terraform-aws-security-group-module.git?ref=main"
+    project = var.project
+    environment = var.environment
+    sg_name = "rabbitmq"
+    sg_description = "for rabbitmq connection"
+    vpc_id = local.vpc_id
+}
+
 # giving connection from laptop to bastion by creating the security group for basiton and allowing only incoming traffic on port 22 for bastion
 resource "aws_security_group_rule" "bastion_laptop" {
     type = "ingress"
@@ -110,4 +146,49 @@ resource "aws_security_group_rule" "vpn_943" {
     protocol = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
     security_group_id = module.openvpn.sg_id
+}
+
+#mongodb ports
+resource "aws_security_group_rule" "mongodb_ports_vpn" {
+    count = length(var.mongodb_ports_vpn)
+    type = "ingress"
+    from_port = var.mongodb_ports_vpn[count.index]
+    to_port = var.mongodb_ports_vpn[count.index]
+    protocol = "tcp"
+    source_security_group_id = module.openvpn.sg_id
+    security_group_id = module.mongodb.sg_id
+}
+
+#redis ports
+resource "aws_security_group_rule" "redis_ports_vpn" {
+    count = length(var.redis_ports_vpn)
+    type = "ingress"
+    from_port = var.redis_ports_vpn[count.index]
+    to_port = var.redis_ports_vpn[count.index]
+    protocol = "tcp"
+    source_security_group_id = module.openvpn.sg_id
+    security_group_id = module.redis.sg_id
+}
+
+#mysql ports
+resource "aws_security_group_rule" "mysql_ports_vpn" {
+    count = length(var.mysql_ports_vpn)
+    type = "ingress"
+    from_port = var.mysql_ports_vpn[count.index]
+    to_port = var.mysql_ports_vpn[count.index]
+    protocol = "tcp"
+    source_security_group_id = module.openvpn.sg_id
+    security_group_id = module.mysql.sg_id
+}
+
+#rabbitmq ports
+#mysql ports
+resource "aws_security_group_rule" "rabbitmq_ports_vpn" {
+    count = length(var.rabbitmq_ports_vpn)
+    type = "ingress"
+    from_port = var.rabbitmq_ports_vpn[count.index]
+    to_port = var.rabbitmq_ports_vpn[count.index]
+    protocol = "tcp"
+    source_security_group_id = module.openvpn.sg_id
+    security_group_id = module.rabbitmq.sg_id
 }

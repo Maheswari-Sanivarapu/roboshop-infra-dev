@@ -17,3 +17,10 @@ resource "aws_ssm_parameter" "private_subnet_id" {
 }
 # performs the opposite operation: producing a string joining together a list of strings with a given separator.
 # so here join function will convert list to string and append with , here
+
+
+resource "aws_ssm_parameter" "database_subnet_id" {
+  name  = "/${var.project}/${var.environment}/database_subnet_id" # creating the name for database-subnet-id
+  type  = "StringList" # here the subnet is list
+  value = join(",",module.vpc.database_subnet_id) # getting the .database_subnet_id from output exposed from terraform-aws-vpc-module and calling the module and converting the list to string using join function
+}
