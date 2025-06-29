@@ -64,6 +64,17 @@ resource "aws_security_group_rule" "backend_alb_bastion" {
     security_group_id = module.backend_alb.sg_id # backend-alb security id
 }
 
+# making the connection from load balancer to openvpn in order to make the connection
+resource "aws_security_group_rule" "loadbalancer_openvpn" {
+    type = "ingress"
+    from_port = 80
+    to_port = 80
+    protocol = "tcp"
+    source_security_group_id = module.openvpn.sg_id # attaching the openvpn sg_id to load balancer to make connection between load balancer and openvpn
+    # if user connects to openvpn client and user is in that region he will directly to the load balancer through DNS Name
+    security_group_id = module.backend_alb.sg_id # load balancer security group id
+}
+
 #vpn ports are 22,443,1194,943
 resource "aws_security_group_rule" "vpn_ssh" {
     type = "ingress"
