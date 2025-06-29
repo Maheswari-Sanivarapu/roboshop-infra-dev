@@ -11,27 +11,27 @@ resource "aws_instance" "mongodb" {
     )
 }
 
-resource "terraform_data" "mongodb" {
-    triggers_replace [
-        aws_instance.mongodb.id
+resource "terraform_data" "mongodb" { # terraform_Data is used to connect to specific instance and it won't create any new instance
+    triggers_replace [ 
+        aws_instance.mongodb.id # once the instance is created we are connecting to that instance 
     ]
 
     provisioner "file" {
-        source = "bootstrap.sh"
-        dest = "/tmp/bootstrap.sh"
+        source = "bootstrap.sh" # here bootstrap.sh is used to create ansible and install the required files and here it is source
+        dest = "/tmp/bootstrap.sh" # it will install dependencies in /tmp/bootstrap.sh
     }
     
-    connection {
+    connection { 
         type = "ssh"
         username = "ec2-user"
         password = "DevOps321"
-        host = aws_instance.mongodb.private_ip
+        host = aws_instance.mongodb.private_ip # connecting to the created instance using private ip bcoz mongodb is present in private subnet
     }
 
     provisioner "remote-exec" {
         inline =[
             "chmod +x bootstrap.sh"
-            "sudo sh /tmp/bootstrap.sh mongodb"
+            "sudo sh /tmp/bootstrap.sh mongodb" # installing required dependencies
         ]
     }
 }
@@ -50,9 +50,9 @@ resource "aws_instance" "redis" {
     )
 }
 
-resource "terraform_data" "redis" {
+resource "terraform_data" "redis" { 
     triggers_replace [
-        aws_instance.redis.id
+        aws_instance.redis.id 
     ]
 
     provisioner "file" {
