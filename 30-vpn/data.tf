@@ -5,6 +5,14 @@ data "ami_id" "vpn_ami" {
         name   = "name"
         values = ["OpenVPN Access Server Community Image-8fbe3379-*"]
     }
+    filter {
+        name   = "root-device-type"
+        values = ["ebs"]
+  }
+    filter {
+        name   = "virtualization-type"
+        values = ["hvm"]
+    }
 }
 
 data "aws_ssm_parameter" "openvpn_sg_id" {

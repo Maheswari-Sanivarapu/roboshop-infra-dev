@@ -1,4 +1,8 @@
-resource "aws_instance" "openvpn" {
+resource "aws_key_pair" "openvpn"{
+    key_name = "pavikey"
+    public_key = file("C:\\Users\\saniv\\pavikey")
+}
+resource "aws_instance" "vpn" {
     ami = local.openvpn_ami_id
     instance_type = "t2.micro"
     vpc_security_group_ids = [local.openvpn_sg_id]
