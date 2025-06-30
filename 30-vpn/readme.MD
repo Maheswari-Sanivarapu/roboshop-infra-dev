@@ -11,3 +11,4 @@ open_vpn_ami_id taking the ami_id from aws for openvpn server
 
 --> here storing the setup related to openvpn in openvpn.sh in order to connect to openvpn server
 --> in order to connect to private subnets like load balancer, databases we need to first connect to openvpn client through openvpn server/ec2 instance public instance than we can connect to databases and load balancer automatically bcoz in 10-sg we have given the openvpn-sg-id as source_security_group to DB and lb so that it will work
+--> here getting ami-id for openvpn by searching "OpenVPN Access Server" under community AMI tab bcoz for vpn we should use that only
