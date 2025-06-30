@@ -18,12 +18,12 @@ resource "terraform_data" "mongodb" { # terraform_Data is used to connect to spe
 
     provisioner "file" {
         source = "bootstrap.sh" # here bootstrap.sh is used to create ansible and install the required files and here it is source
-        dest = "/tmp/bootstrap.sh" # it will install dependencies in /tmp/bootstrap.sh
+        destination = "/tmp/bootstrap.sh" # it will install dependencies in /tmp/bootstrap.sh
     }
     
     connection { 
         type = "ssh"
-        username = "ec2-user"
+        user = "ec2-user"
         password = "DevOps321"
         host = aws_instance.mongodb.private_ip # connecting to the created instance using private ip bcoz mongodb is present in private subnet
     }
@@ -57,12 +57,12 @@ resource "terraform_data" "redis" {
 
     provisioner "file" {
         source = "bootstrap.sh"
-        dest = "/tmp/bootstrap.sh"
+        destination = "/tmp/bootstrap.sh"
     }
     
     connection {
         type = "ssh"
-        username = "ec2-user"
+        user = "ec2-user"
         password = "DevOps321"
         host = aws_instance.redis.private_ip
     }
@@ -97,12 +97,12 @@ resource "terraform_data" "mysql" {
 
     provisioner "file" {
         source = "bootstrap.sh"
-        dest = "/tmp/bootstrap.sh"
+        destination = "/tmp/bootstrap.sh"
     }
     
     connection {
         type = "ssh"
-        username = "ec2-user"
+        user = "ec2-user"
         password = "DevOps321"
         host = aws_instance.mysql.private_ip
     }
@@ -136,12 +136,12 @@ resource "terraform_data" "rabbitmq" {
 
     provisioner "file" {
         source = "bootstrap.sh"
-        dest = "/tmp/bootstrap.sh"
+        destination = "/tmp/bootstrap.sh"
     }
     
     connection {
         type = "ssh"
-        username = "ec2-user"
+        user = "ec2-user"
         password = "DevOps321"
         host = aws_instance.rabbitmq.private_ip
     }
