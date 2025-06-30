@@ -3,7 +3,7 @@ data "ami_id" "vpn_ami" {
     most_recent = true # latest version lo crate chestudi ee command
     filter {
         name   = "name"
-        values = ["OpenVPN Access Server Community Image-8fbe3379-*"]
+        values = ["OpenVPN Access Server Community Image-fe8020db-*"]
     }
     filter {
         name   = "root-device-type"
