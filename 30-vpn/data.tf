@@ -8,7 +8,7 @@ data "ami_id" "vpn_ami" {
     filter {
         name   = "root-device-type"
         values = ["ebs"]
-  }
+    }
     filter {
         name   = "virtualization-type"
         values = ["hvm"]
