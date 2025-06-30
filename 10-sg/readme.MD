@@ -15,3 +15,9 @@ using data.tf--> it will fetch the value of vpc_id and storing that value in loc
 after getting the security group id it will store that security group id  in aws_ssm_parameter store by creating the aws_ssm_parameter store in parameters.tf and it will this as input to instances
 
 
+--> Here Creating the security groups for bastion server/ec2-instance,load balancer(allowing sg-id of bastion and openvpn),openvpn(allowing only ingress ports on 22,443,1194,943),databases(monogodb,redis,rabbitmq,mysql)
+--> storing the sg-ids of bastion,load balancer,openvpn,databases on ssm parameter store on aws
+
+--> for load balancer the source_security_group_id is bastion and openvpn bcoz load balancer will be in private subnet and bastion,openvpn will be public subnet. if bastion is in private subnet then only openvpn is the source for lb
+
+--> for databases(monogodb,redis,rabbitmq,mysql) source_security_group_id is openvpn sg-id

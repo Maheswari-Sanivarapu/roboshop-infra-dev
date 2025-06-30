@@ -17,7 +17,7 @@ module "alb" {
 }
 
 resource "aws_lb_listener" "listener" {
-    load_balancer_arn = module.alb.arn
+    load_balancer_arn = module.alb.arn # taking the alb arn id in order to connect to alb
     port = "80"
     protocol = "HTTP"
     default_action {
