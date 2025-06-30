@@ -8,7 +8,7 @@ module "alb" {
     subnets = local.private_subnet_ids # creating the alb in private subnet bcoz this is for backend and backend should be in private subnet
     create_security_group = false
     security_groups = [local.backend_alb_sg_id]  # getting the backend sg id from 10-sg bcoz in 10-sg only sg-id will be created
-    enable_deletion_protection = true
+    enable_deletion_protection = false
     tags = merge (
        local.common_tags,
         {
