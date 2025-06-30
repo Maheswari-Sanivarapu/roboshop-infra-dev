@@ -1,4 +1,4 @@
-data "ami_id" "vpn_ami" {
+data "aws_ami" "openvpn_ami" {
     owners      = ["679593333241"]
     most_recent = true # latest version lo crate chestudi ee command
     filter {
