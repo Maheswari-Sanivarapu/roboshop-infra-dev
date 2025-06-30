@@ -12,7 +12,7 @@ resource "aws_instance" "mongodb" {
 }
 
 resource "terraform_data" "mongodb" { # terraform_Data is used to connect to specific instance and it won't create any new instance
-    triggers_replace [ 
+    triggers_replace = [ 
         aws_instance.mongodb.id # once the instance is created we are connecting to that instance 
     ]
 
@@ -51,7 +51,7 @@ resource "aws_instance" "redis" {
 }
 
 resource "terraform_data" "redis" { 
-    triggers_replace [
+    triggers_replace = [
         aws_instance.redis.id 
     ]
 
@@ -91,7 +91,7 @@ resource "aws_instance" "mysql" {
 }
 
 resource "terraform_data" "mysql" {
-    triggers_replace [
+    triggers_replace = [
         aws_instance.mysql.id
     ]
 
@@ -115,23 +115,22 @@ resource "terraform_data" "mysql" {
     }
 }
 
-resource "aws_instance" "mysql" {
+#rabbitmq
+resource "aws_instance" "rabbitmq" {
     ami = local.ami_id
     instance_type = "t2.micro"
-    vpc_security_group_ids = [local.mysql_sg_id]
+    vpc_security_group_ids = [local.rabbitmq_sg_id]
     subnet_id = local.database_subnet_id
     tags = merge(
         local.common_tags,
         {
-            Name = "${var.project}-${var.environment}-mysql"
+            Name = "${var.project}-${var.environment}-rabbitmq"
         }
     )
 }
 
-
-#rabbitmq
 resource "terraform_data" "rabbitmq" {
-    triggers_replace [
+    triggers_replace = [
         aws_instance.rabbitmq.id
     ]
 
