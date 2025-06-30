@@ -29,7 +29,7 @@ resource "terraform_data" "mongodb" { # terraform_Data is used to connect to spe
     }
 
     provisioner "remote-exec" {
-        inline =[
+        inline = [
             "chmod +x bootstrap.sh",
             "sudo sh /tmp/bootstrap.sh mongodb" # installing required dependencies
         ]
@@ -68,7 +68,7 @@ resource "terraform_data" "redis" {
     }
 
     provisioner "remote-exec" {
-        inline =[
+        inline = [
             "chmod +x bootstrap.sh",
             "sudo sh /tmp/bootstrap.sh redis"
         ]
@@ -108,7 +108,7 @@ resource "terraform_data" "mysql" {
     }
 
     provisioner "remote-exec" {
-        inline =[
+        inline = [
             "chmod +x bootstrap.sh",
             "sudo sh /tmp/bootstrap.sh mysql"
         ]
@@ -147,7 +147,7 @@ resource "terraform_data" "rabbitmq" {
     }
 
     provisioner "remote-exec" {
-        inline =[
+        inline = [
             "chmod +x bootstrap.sh",
             "sudo sh /tmp/bootstrap.sh rabbitmq"
         ]
