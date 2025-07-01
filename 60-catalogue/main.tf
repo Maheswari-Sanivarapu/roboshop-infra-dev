@@ -28,7 +28,7 @@ resource "aws_instance" "catalogue" {
 }
 
 
-resource "terraform_data" "catalgoue" {
+resource "terraform_data" "catalogue" {
     triggers_replace = {
         aws_instance.catalogue.id
     }
@@ -57,6 +57,6 @@ resource "aws_route53_record" "catalogue" {
     name = "catalogue-${var.environment}.${var.route53_domain_name}"
     type = "A"
     ttl = 1
-    records = [aws_instance.catalgoue.private_ip]
+    records = [aws_instance.catalogue.private_ip]
     allow_overwrite = true
 }
