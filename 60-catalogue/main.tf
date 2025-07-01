@@ -52,11 +52,45 @@ resource "terraform_data" "catalogue" {
     }
 }
 
-resource "aws_route53_record" "catalogue" {
-    zone_id = var.route53_zone_id
-    name = "catalogue-${var.environment}.${var.route53_domain_name}"
-    type = "A"
-    ttl = 1
-    records = [aws_instance.catalogue.private_ip]
-    allow_overwrite = true
+# first stopping the catalogue instance
+resource "aws_ec2_instance_state" "catalogue" {
+    instance_id = aws_instance.catalogue.id
+    state       = "stopped"
+    depends_on = [terraform_data.catalogue] # first configuration is done here then stopping the instance
 }
+
+# take ami id from catalogue instance
+resource "aws_ami_from_instance" "catalogue" {
+    name = "${var.project}-${var.environment}-catalogue"
+    source = aws_instance.catalogue.id  # id of the instance to use it as base AMI Image
+    depends_on = [aws_ec2_instance_state.catalogue]
+    tags = merge(
+        local.common_tags,
+        {
+            Name = "${var.project}-${var.environment}-catalogue"
+        }
+    )
+}
+
+# terminate the catalogue instance
+resource "terraform_data" "catalogue_delete" {
+    triggers_replace = {
+        aws_instance.catalogue.id
+    }
+
+  # make sure you have aws configure in your laptop
+    provisioner "local-exec" {
+        command = "aws ec2 terminate-instances --instance-ids ${aws_instance.catalogue.id}" 
+    }
+    depends_on = [aws_ami_from_instance.catalogue]
+}
+
+
+# resource "aws_route53_record" "catalogue" {
+#     zone_id = var.route53_zone_id
+#     name = "catalogue-${var.environment}.${var.route53_domain_name}"
+#     type = "A"
+#     ttl = 1
+#     records = [aws_instance.catalogue.private_ip]
+#     allow_overwrite = true
+# }
