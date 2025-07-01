@@ -1,0 +1,19 @@
+data "aws_ami" "joindevops_ami" {
+    owners = ["973714476881"]
+    most_recent = true
+    filter {
+        name   = "name"
+        values = ["RHEL-9-DevOps-Practice"]
+    }
+}
+
+data "aws_ssm_parameter" "vpc_id" {
+  name  = "/${var.project}/${var.environment}/vpc_id"
+}
+data "aws_ssm_parameter" "private_subnet_id" {
+  name  = "/${var.project}/${var.environment}/private_subnet_id"
+}
+
+data "aws_ssm_parameter" "catalogue_sg_id" {
+  name = "/${var.project}/${var.environment}/catalogue_sg_id"
+}

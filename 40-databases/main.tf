@@ -82,6 +82,8 @@ resource "aws_instance" "mysql" {
     instance_type = "t2.micro"
     vpc_security_group_ids = [local.mysql_sg_id]
     subnet_id = local.database_subnet_id
+    iam_instance_profile = "EC2ToFetchSSMParameter" # this IAM role is used to fetch the Mysql password from ssm parameter store in aws,
+#so creating IAM Role with ec2 service to connect to ssm parameter to fetch mysql password and attaching this role to MYSQL EC2 Instance and this EC2 instance will take password from aws
     tags = merge(
         local.common_tags,
         {
@@ -152,4 +154,42 @@ resource "terraform_data" "rabbitmq" {
             "sudo sh /tmp/bootstrap.sh rabbitmq"
         ]
     }
+}
+
+
+# storing mongodb private-ip in route53
+resource "aws_route53_record" "mongodb" {
+  zone_id = var.route53_zone_id
+  name    = "mongodb-${var.environment}.${var.route53_domain_name}"
+  type    = "A"
+  ttl     = 1
+  records = [aws_instance.mongodb.private_ip]
+  allow_overwrite = true
+}
+
+# storing redis private-ip in route53
+resource "aws_route53_record" "redis" {
+    zone_id = var.route53_zone_id
+    name = "redis-${var.environment}.${var.route53_domain_name}"
+    type = "A"
+    ttl = 1
+    records = [aws_instance.redis.private_ip]
+}
+
+# storing mysql private-ip in route53
+resource "aws_route53_record" "mysql" {
+    zone_id = var.route53_zone_id
+    name = "mysql-${var.environment}.${var.route53_domain_name}"
+    type = "A"
+    ttl = 1
+    records = [aws_instance.mysql.private_ip]
+}
+
+# storing rabbitmq private-ip in route53
+resource "aws_route53_record" "rabbitmq" {
+    zone_id = var.route53_zone_id
+    name = "rabbitmq-${var.environment}.${var.route53_domain_name}"
+    type = "A"
+    ttl = 1
+    records = [aws_instance.rabbitmq.private_ip]
 }

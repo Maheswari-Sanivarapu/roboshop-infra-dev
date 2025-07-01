@@ -31,3 +31,16 @@ resource "aws_lb_listener" "listener" {
         }
     }
 }
+
+#creating the route53 for load balancer bcoz here lb is having big DNS Name so adding the DNS Name in route53 record
+resource "aws_route53_record" "loadbalancer" {
+  zone_id = var.route53_zone_id # take zone id from route53
+  name    = "*.backend-${var.environment}.${var.route53_domain_name}" # take domain name from route53
+  type    = "A"
+  allow_overwrite = true
+  alias {
+    name                   = module.alb.dns_name # dns_name of ALB storing it in route53 in aws
+    zone_id                = module.alb.zone_id # zone id of ALB
+    evaluate_target_health = true
+  }
+}

@@ -1,4 +1,4 @@
-data "aws_ami" "databases_ami" {
+data "aws_ami" "joindevops_ami" {
     owners      = ["973714476881"]
     most_recent = true # latest version lo crate chestudi ee command
     filter {
