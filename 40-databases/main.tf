@@ -16,17 +16,19 @@ resource "terraform_data" "mongodb" { # terraform_Data is used to connect to spe
         aws_instance.mongodb.id # once the instance is created we are connecting to that instance 
     ]
 
-    provisioner "file" {
-        source = "bootstrap.sh" # here bootstrap.sh is used to create ansible and install the required files and here it is source
-        destination = "/tmp/bootstrap.sh" # it will install dependencies in /tmp/bootstrap.sh
-    }
-    
     connection { 
         type = "ssh"
         user = "ec2-user"
         password = "DevOps321"
         host = aws_instance.mongodb.private_ip # connecting to the created instance using private ip bcoz mongodb is present in private subnet
     }
+
+    
+    provisioner "file" {
+        source = "bootstrap.sh" # here bootstrap.sh is used to create ansible and install the required files and here it is source
+        destination = "/tmp/bootstrap.sh" # it will install dependencies in /tmp/bootstrap.sh
+    }
+    
 
     provisioner "remote-exec" {
         inline = [
@@ -55,16 +57,16 @@ resource "terraform_data" "redis" {
         aws_instance.redis.id 
     ]
 
-    provisioner "file" {
-        source = "bootstrap.sh"
-        destination = "/tmp/bootstrap.sh"
-    }
-    
     connection {
         type = "ssh"
         user = "ec2-user"
         password = "DevOps321"
         host = aws_instance.redis.private_ip
+    }
+
+    provisioner "file" {
+        source = "bootstrap.sh"
+        destination = "/tmp/bootstrap.sh"
     }
 
     provisioner "remote-exec" {
@@ -97,16 +99,16 @@ resource "terraform_data" "mysql" {
         aws_instance.mysql.id
     ]
 
-    provisioner "file" {
-        source = "bootstrap.sh"
-        destination = "/tmp/bootstrap.sh"
-    }
-    
     connection {
         type = "ssh"
         user = "ec2-user"
         password = "DevOps321"
         host = aws_instance.mysql.private_ip
+    }
+
+    provisioner "file" {
+        source = "bootstrap.sh"
+        destination = "/tmp/bootstrap.sh"
     }
 
     provisioner "remote-exec" {
@@ -136,19 +138,19 @@ resource "terraform_data" "rabbitmq" {
         aws_instance.rabbitmq.id
     ]
 
-    provisioner "file" {
-        source = "bootstrap.sh"
-        destination = "/tmp/bootstrap.sh"
-    }
-    
-    connection {
+    connection { # here connecting to the ec2 instance
         type = "ssh"
         user = "ec2-user"
         password = "DevOps321"
         host = aws_instance.rabbitmq.private_ip
     }
 
-    provisioner "remote-exec" {
+    provisioner "file" { # after connecting to instance copying the file from source to destination
+        source = "bootstrap.sh"
+        destination = "/tmp/bootstrap.sh"
+    }
+    
+    provisioner "remote-exec" { # then executing the file on remote instance i.e. ec2 instance
         inline = [
             "chmod +x /tmp/bootstrap.sh",
             "sudo sh /tmp/bootstrap.sh rabbitmq"
