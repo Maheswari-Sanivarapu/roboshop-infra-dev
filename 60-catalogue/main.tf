@@ -44,6 +44,7 @@ resource "terraform_data" "catalogue" {
         password = "DevOps321"
         host = aws_instance.catalogue.private_ip
     }
+    
     provisioner "remote-exec" {
         inline = [
             "chmod +x /tmp/catalogue.sh",
