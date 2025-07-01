@@ -9,8 +9,8 @@ resource "aws_lb_target_group" "catalogue" {
         matcher = "200-299" # response code for health check it ranges from 200-299
         path = "/health" # checking the health of the catalogue component
         port = 8080 # port which catalogue component is allowed
-        timeout = 5
-        unhealthy_threshold = 3
+        timeout = 5 # after hitting the URL before 5 seconds we should get response or it is unhealthy
+        unhealthy_threshold = 3 # to check the health of the instane we will use this if the instance fails after 3 attempts then it will mark it as unhealthy
     }   
 }
 

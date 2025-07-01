@@ -11,3 +11,5 @@ database_private_subnet_id --> taking the value from 00-VPC and the value is kep
     so integrating terraform with ansible --> creating instances using terraform and configuring the required dependencies/libraries using ansible and by pulling the ansible roles from github
     2. to connect to that instance we are using connection here and passing the username,password,private ip to connect to that instance
     3. here using remote-exec provisioner to give permission to execute and install the databases(mongodb,mysql,rabbitmq,redis)
+
+--> creating the route53 records for databases which includes mongodb,redis,mysql,rabbitmq using privat-ip

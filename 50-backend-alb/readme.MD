@@ -13,6 +13,13 @@ creating the load balancer with sg-id and private subnet-id
 ## output
 getting load balancer arn and giving it as input to listener
 
+
+
 --> Here creating the load balancer and attaching load balancer arn to listener
 --> in order to access the application inside load balancer we are connecting the bastion sg-id to load balancer by allowing only ingress traffic and also connecting the openvpn sg-id to load balancer by allowing only ingress traffic 
 --> allowing ingress traffic to lb using source_security_group_id as bastion server sg-id and openvpn sg-id
+
+--> creating the route53 record for load balancer bcoz dns name of route53 is too long
+    creating the record with alias
+    taking the zone-id and name taking it from route53 in aws
+    taking the zone-id and name inside alias from newly created load balancer
