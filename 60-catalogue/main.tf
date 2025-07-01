@@ -26,3 +26,37 @@ resource "aws_instance" "catalogue" {
         }
     )
 }
+
+
+resource "terraform_data" "catalgoue" {
+    triggers_replace = {
+        aws_instance.catalogue.id
+    }
+
+    provisioner "file" {
+        source = "catalogue.sh"
+        destination = "/tmp/catalogue.sh"
+    }
+
+    connection {
+        type = "ssh"
+        user = "ec2-user"
+        password = "DevOps321"
+        host = aws_instance.catalogue.private_ip
+    }
+    provisioner "remote-exec" {
+        inline = [
+            "chmod +x /tmp/catalogue.sh",
+            "sudo sh /tmp/catalogue.sh catalogue"
+        ]
+    }
+}
+
+resource "aws_route53_record" "catalogue" {
+    zone_id = var.route53_zone_id
+    name = "catalogue-${var.environment}.${var.route53_domain_name}"
+    type = "A"
+    ttl = 1
+    records = [aws_instance.catalgoue.private_ip]
+    allow_overwrite = true
+}

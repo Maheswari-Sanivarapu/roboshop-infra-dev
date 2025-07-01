@@ -157,7 +157,8 @@ resource "terraform_data" "rabbitmq" {
 }
 
 
-# storing mongodb private-ip in route53
+# storing mongodb private-ip in route53  
+#name = mongodb-roboshop.pavithra.fun
 resource "aws_route53_record" "mongodb" {
   zone_id = var.route53_zone_id
   name    = "mongodb-${var.environment}.${var.route53_domain_name}"
@@ -168,28 +169,34 @@ resource "aws_route53_record" "mongodb" {
 }
 
 # storing redis private-ip in route53
+#name = redis-roboshop.pavithra.fun
 resource "aws_route53_record" "redis" {
     zone_id = var.route53_zone_id
     name = "redis-${var.environment}.${var.route53_domain_name}"
     type = "A"
     ttl = 1
     records = [aws_instance.redis.private_ip]
+    allow_overwrite = true
 }
 
 # storing mysql private-ip in route53
+#name = mysql-roboshop.pavithra.fun
 resource "aws_route53_record" "mysql" {
     zone_id = var.route53_zone_id
     name = "mysql-${var.environment}.${var.route53_domain_name}"
     type = "A"
     ttl = 1
     records = [aws_instance.mysql.private_ip]
+    allow_overwrite = true
 }
 
 # storing rabbitmq private-ip in route53
+#name = rabbitmq-roboshop.pavithra.fun
 resource "aws_route53_record" "rabbitmq" {
     zone_id = var.route53_zone_id
     name = "rabbitmq-${var.environment}.${var.route53_domain_name}"
     type = "A"
     ttl = 1
     records = [aws_instance.rabbitmq.private_ip]
+    allow_overwrite = true
 }
