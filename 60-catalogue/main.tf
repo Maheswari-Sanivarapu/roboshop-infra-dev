@@ -62,7 +62,7 @@ resource "aws_ec2_instance_state" "catalogue" {
 # take ami id from catalogue instance
 resource "aws_ami_from_instance" "catalogue" {
     name = "${var.project}-${var.environment}-catalogue"
-    source = aws_instance.catalogue.id  # id of the instance to use it as base AMI Image
+    source_instance_id = aws_instance.catalogue.id  # id of the instance to use it as base AMI Image
     depends_on = [aws_ec2_instance_state.catalogue]
     tags = merge(
         local.common_tags,
