@@ -33,7 +33,7 @@ resource "terraform_data" "mongodb" { # terraform_Data is used to connect to spe
     provisioner "remote-exec" {
         inline = [
             "chmod +x /tmp/bootstrap.sh",
-            "sudo sh /tmp/bootstrap.sh mongodb" # installing required dependencies
+            "sudo sh /tmp/bootstrap.sh mongodb ${var.environment}" # installing required dependencies
         ]
     }
 }
@@ -72,7 +72,7 @@ resource "terraform_data" "redis" {
     provisioner "remote-exec" {
         inline = [
             "chmod +x /tmp/bootstrap.sh",
-            "sudo sh /tmp/bootstrap.sh redis"
+            "sudo sh /tmp/bootstrap.sh redis ${var.environment}"
         ]
     }
 }
@@ -114,7 +114,7 @@ resource "terraform_data" "mysql" {
     provisioner "remote-exec" {
         inline = [
             "chmod +x /tmp/bootstrap.sh",
-            "sudo sh /tmp/bootstrap.sh mysql"
+            "sudo sh /tmp/bootstrap.sh mysql ${var.environment}"
         ]
     }
 }
@@ -153,7 +153,7 @@ resource "terraform_data" "rabbitmq" {
     provisioner "remote-exec" { # then executing the file on remote instance i.e. ec2 instance
         inline = [
             "chmod +x /tmp/bootstrap.sh",
-            "sudo sh /tmp/bootstrap.sh rabbitmq"
+            "sudo sh /tmp/bootstrap.sh rabbitmq ${var.environment}"
         ]
     }
 }
