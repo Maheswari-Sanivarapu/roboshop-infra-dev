@@ -23,5 +23,6 @@ resource "aws_route53_record" "openvpn" {
     name = "vpn-${var.environment}.${var.route53_domain_name}"
     type = "A"
     ttl = 1
-    records = [aws_instance.vpn.private_ip]
+    records = [aws_instance.vpn.public_ip]
+    allow_overwrite = true
 }
