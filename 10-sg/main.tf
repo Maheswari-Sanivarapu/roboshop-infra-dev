@@ -214,8 +214,8 @@ resource "aws_security_group_rule" "backend_alb_catalogue" {
     security_group_id = module.catalogue.sg_id
 }
 
-#openvpn to catalogue port 22
-resource "aws_security_group_rule" "openvpn_catalogue" {
+#openvpn to catalogue ssh port 22
+resource "aws_security_group_rule" "openvpn_catalogue_ssh" {
     type = "ingress"
     from_port = 22
     to_port = 22
@@ -224,8 +224,8 @@ resource "aws_security_group_rule" "openvpn_catalogue" {
     security_group_id = module.catalogue.sg_id
 }
 
-#openvpn to catalogue directly on 8080
-resource "aws_security_group_rule" "openvpn_catalogue" {
+#openvpn to catalogue http port directly on 8080
+resource "aws_security_group_rule" "openvpn_catalogue_http" {
     type = "ingress"
     from_port = 8080
     to_port = 8080
