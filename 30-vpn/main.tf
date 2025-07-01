@@ -17,3 +17,11 @@ resource "aws_instance" "vpn" {
         }
     )
 }
+
+resource "aws_route53_record" "openvpn" {
+    zone_id = var.route53_zone_id
+    name = "vpn-${var.environment}.${var.route53_domain_name}"
+    type = "A"
+    ttl = 1
+    records = [aws_instance.vpn.private_ip]
+}
