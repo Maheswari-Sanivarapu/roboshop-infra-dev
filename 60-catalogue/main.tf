@@ -73,6 +73,7 @@ resource "aws_ami_from_instance" "catalogue" {
 }
 
 # terminate the catalogue instance
+
 resource "terraform_data" "catalogue_delete" {
     triggers_replace = [
         aws_instance.catalogue.id
