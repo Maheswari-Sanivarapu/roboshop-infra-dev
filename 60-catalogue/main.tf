@@ -29,9 +29,9 @@ resource "aws_instance" "catalogue" {
 
 
 resource "terraform_data" "catalogue" {
-    triggers_replace = {
+    triggers_replace = [
         aws_instance.catalogue.id
-    }
+    ]
 
     provisioner "file" {
         source = "catalogue.sh"
@@ -74,9 +74,9 @@ resource "aws_ami_from_instance" "catalogue" {
 
 # terminate the catalogue instance
 resource "terraform_data" "catalogue_delete" {
-    triggers_replace = {
+    triggers_replace = [
         aws_instance.catalogue.id
-    }
+    ]
 
   # make sure you have aws configure in your laptop
     provisioner "local-exec" {
