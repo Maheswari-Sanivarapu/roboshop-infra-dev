@@ -44,7 +44,7 @@ resource "terraform_data" "catalogue" {
         password = "DevOps321"
         host = aws_instance.catalogue.private_ip # connecting to the instance through private_ip bcoz catalogue component  is in private subnet
     }
-    
+   
     provisioner "remote-exec" {
         inline = [
             "chmod +x /tmp/catalogue.sh", # executing this commands inside instance so using remote exec
@@ -103,12 +103,12 @@ resource "terraform_data" "catalogue_delete" {
 # requires image-id,sg-id,instance_type,launch_template_name/name
 resource "aws_launch_template" "catalogue" {
     name = "${var.project}-${var.environment}-catalogue"
-    image_id = aws_ami_from_instance.catalogue.id
+    image_id = aws_ami_from_instance.catalogue.id # image-id from aws_ami_from_instance
     instance_type = "t2.micro"
-    instance_initiated_shutdown_behavior = "terminate"
-    vpc_security_group_ids = [local.catalogue_sg_id]
+    instance_initiated_shutdown_behavior = "terminate" # once it took image-id it should be stopped or terminate
+    vpc_security_group_ids = [local.catalogue_sg_id] #sg-id of catalogue
     tag_specifications {
-        resource_type = "instance"
+        resource_type = "instance" #instance here
         tags = merge(
             local.common_tags,
             {
@@ -138,16 +138,16 @@ resource "aws_launch_template" "catalogue" {
 # Requires Launch_template,availability_zone,target_group,desired_capacity,min,max,availability_zones,health_check_grace_period
 resource "aws_autoscaling_group" "catalogue" {
      name = "${var.project}-${var.environment}-catalogue"
-     desired_capacity = 1
-     max_size = 10
-     min_size = 1
-     health_check_grace_period = 90
-     health_check_type = "ELB"
-     vpc_zone_identifier = local.private_subnet_ids
-     target_group_arns = [aws_lb_target_group.catalogue.arn]
+     desired_capacity = 1  # capacity to autoscale
+     max_size = 10 # max size
+     min_size = 1 # min size
+     health_check_grace_period = 90 # once the instance is created how much it is used to initialize the instance
+     health_check_type = "ELB" # here we are checking LB health check
+     vpc_zone_identifier = local.private_subnet_ids # availability zones to add if one zone is down it will have another zone
+     target_group_arns = [aws_lb_target_group.catalogue.arn] # to where the traffic should route from listener based on the URL,based on the target group  
      launch_template {
-        id = aws_launch_template.catalogue.id
-        version = aws_launch_template.catalogue.latest_version
+        id = aws_launch_template.catalogue.id # taking id from launch_template
+        version = aws_launch_template.catalogue.latest_version # taking version id from launch_template when every launch template is created new version will be there
      }
      dynamic "tag" {
         for_each = merge(
@@ -163,40 +163,40 @@ resource "aws_autoscaling_group" "catalogue" {
         }
     }
      instance_refresh {
-        strategy = "Rolling"
+        strategy = "Rolling" # here once we got launch_template creating one instance and deleting one instance like rolling update
         preferences {
         min_healthy_percentage = 50
         }
-        triggers = ["launch_template"]
+        triggers = ["launch_template"] # when new launch_template is created it will automatically trigger and take that value
      }
      timeouts {
         delete = "15m"
     }
 }
 
-
+# auto-scaling policy based on the cpu or memory utilization it will autoscale so here taking cpu utilization
 resource "aws_autoscaling_policy" "catalogue" {
     name = "${var.project}-${var.environment}-catalogue"
-    autoscaling_group_name = aws_autoscaling_group.catalogue.name
-    policy_type = "TargetTrackingScaling"
+    autoscaling_group_name = aws_autoscaling_group.catalogue.name # auto-scaling group name
+    policy_type = "TargetTrackingScaling" # target to track this
     target_tracking_configuration {
     predefined_metric_specification {
-      predefined_metric_type = "ASGAverageCPUUtilization"
+      predefined_metric_type = "ASGAverageCPUUtilization" # cpu utilization
     }
-    target_value = 75.0
+    target_value = 75.0 # if it is more than 75% it will autoscale
   }
 }
 
 resource "aws_lb_listener_rule" "listener" {
-    listener_arn = local.backend_alb_listener_arn
-    priority     = 10
+    listener_arn = local.backend_alb_listener_arn # getting listener arn
+    priority     = 10 
     action {
     type             = "forward"
-    target_group_arn = aws_lb_target_group.catalogue.arn
+    target_group_arn = aws_lb_target_group.catalogue.arn # here forwarding the traffic to target group
     }
     condition {
         host_header {
-            values = ["catalogue.backend-${var.environment}.${var.route53_domain_name}"]
+            values = ["catalogue.backend-${var.environment}.${var.route53_domain_name}"] #when anyone hits this URL forward to target group
         }
     }
 }

@@ -23,9 +23,14 @@ vpc_id --> here attaching the vpc_id to target group bcoz it requires vpc id
 --> stopping the catalogue instance
 --> taking the AMI ID from catalogue instance
 --> terminating the catalogue instance using local-exec provisioner in Command Line 
--->Once the AMI ID is taken do launch template using that AMI-id and pass image-id of the deleted instance,instance_type,name,sg-id of instance,shutdown behavior like stop or terminate, tags_specification to create instance and volume is attached to the instance add it under tags_specification
+-->Once the AMI ID is taken do launch template using that AMI-id and pass image-id of the deleted instance,instance_type,name,sg-id of instance,instance_initiated_shutdown_behavior like stop or terminate, tags_specification to create instance and volume is attached to the instance add it under tags_specification,resource_type is instance
+--> Create autoscaling group --> it requires desired_capacity, min_size,max_size,health_check_grace_period,availability_zones,launch_template,delete,auto-refresh when new launch_template is taken
+--> Create autoscaling policy and attach it to autoscaling group --> autoscaling group name,policy_type,target_tracking
+--> Add rule in Listener --> listener arn,condition(when certain condition is met),then action(forward to target group),
 
 
+Launch template --> Autoscaling group --> LB --> Listener --> target group --> instance
+--> first traffic routes from LB only, when user hits url like http://catalogue.backend-dev.pavithra.fun then this request will go to load balancer and here Lb will listener based on the protocol i.e. HTTP or HTTPS and listener is having rule like when getting the above url http://catalogue.backend-dev.pavithra.fun forward to target group catalogue, if cpu utilization is high then it will autoscale automatically bcoz autoscaling is attached with load balancer and instance
 
 
 --> here trigger_replace is used whenever there is change in instance-id this trigger_replace will refresh with new instance-id and ask provisioner to do configuration with this new instance id 
