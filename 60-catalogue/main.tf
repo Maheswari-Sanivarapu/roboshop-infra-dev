@@ -30,7 +30,7 @@ resource "aws_instance" "catalogue" {
 
 resource "terraform_data" "catalogue" {
     triggers_replace = [
-        aws_instance.catalogue.id # once catalogue instance is created then this will trigger 
+        aws_instance.catalogue.id # once catalogue instance is created then this will trigger and take the latest catalogue id
     ]
 
     provisioner "file" {

@@ -23,7 +23,9 @@ vpc_id --> here attaching the vpc_id to target group bcoz it requires vpc id
 --> stopping the catalogue instance
 --> taking the AMI ID from catalogue instance
 --> terminating the catalogue instance using local-exec provisioner in Command Line 
+-->Once the AMI ID is taken do launch template using that AMI-id and pass image-id of the deleted instance,instance_type,name,sg-id of instance,shutdown behavior like stop or terminate, tags_specification to create instance and volume is attached to the instance add it under tags_specification
 
 
 
 
+--> here trigger_replace is used whenever there is change in instance-id this trigger_replace will refresh with new instance-id and ask provisioner to do configuration with this new instance id 
