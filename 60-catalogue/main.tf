@@ -144,7 +144,7 @@ resource "aws_autoscaling_group" "catalogue" {
      health_check_grace_period = 90
      health_check_type = "ELB"
      vpc_zone_identifier = local.private_subnet_ids
-     target_group_arns = aws_lb_target_group.catalogue.arn
+     target_group_arns = [aws_lb_target_group.catalogue.arn]
      launch_template {
         id = aws_launch_template.catalogue.id
         version = aws_launch_template.catalogue.latest_version
@@ -169,7 +169,7 @@ resource "aws_autoscaling_group" "catalogue" {
         }
         triggers = ["launch_template"]
      }
-    timeouts {
+     timeouts {
         delete = "15m"
     }
 }
