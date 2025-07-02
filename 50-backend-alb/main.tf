@@ -1,5 +1,5 @@
 #roboshop-dev-backend-alb
-module "alb" {
+module "backend_alb" {
     source = "terraform-aws-modules/alb/aws" # teking the module from terraform_aws_alb documentation
     version = "9.16.0" # giving the version from terraform_aws_alb bcoz in provider version is diff and here it is diff to make compatible adding that module specific version here so either change version in provider or specify version here
     internal = true # means this load balancer will be create in private subnet only. internal = false means it will create in public subnet
@@ -18,8 +18,8 @@ module "alb" {
 }
 
 # creating the listener and attaching it to alb
-resource "aws_lb_listener" "listener" {
-    load_balancer_arn = module.alb.arn # taking the alb arn id in order to connect to alb
+resource "aws_lb_listener" "backend_alb_listener" {
+    load_balancer_arn = module.backend_alb.arn # taking the alb arn id in order to connect to alb
     port = "80"
     protocol = "HTTP"
     default_action {
