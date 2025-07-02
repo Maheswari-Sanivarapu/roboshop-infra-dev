@@ -147,7 +147,7 @@ resource "aws_autoscaling_group" "catalogue" {
      target_group_arns = aws_lb_target_group.catalogue.arn
      launch_template {
         id = aws_launch_template.catalogue.id
-        varsion = aws_launch_template.catalogue.latest_version
+        version = aws_launch_template.catalogue.latest_version
      }
      dynamic "tags" {
         for_each = merge(
@@ -188,7 +188,7 @@ resource "aws_autoscaling_policy" "catalogue" {
 }
 
 resource "aws_lb_listener" "listener" {
-    listener_arn = local.backend_alb_listener
+    listener_arn = local.backend_alb_listener_arn
     priority     = 10
     action {
     type             = "forward"
