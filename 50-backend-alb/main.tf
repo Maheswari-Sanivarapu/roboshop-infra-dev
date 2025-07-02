@@ -39,8 +39,8 @@ resource "aws_route53_record" "loadbalancer" {
   type    = "A"
   allow_overwrite = true
   alias {
-    name                   = module.alb.dns_name # dns_name of ALB storing it in route53 in aws
-    zone_id                = module.alb.zone_id # zone id of ALB
+    name                   = module.backend_alb.dns_name # dns_name of ALB storing it in route53 in aws
+    zone_id                = module.backend_alb.zone_id # zone id of ALB
     evaluate_target_health = true
   }
 }
