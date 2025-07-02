@@ -1,7 +1,7 @@
 resource "aws_lb_target_group" "catalogue" {
     name = "${var.project}-${var.environment}-catalogue"
     port = 8080 # here for catalogue  port 8080 will be allowed here backend component runs on port 8080
-    protocol = "HTTP"
+    protocol = "HTTP" # load balancer will hit
     vpc_id = local.vpc_id
     health_check {
         healthy_threshold = 2 #Number of consecutive health check successes required before considering a target healthy. The range is 2-10. Defaults to 3.
@@ -17,8 +17,8 @@ resource "aws_lb_target_group" "catalogue" {
 resource "aws_instance" "catalogue" {
     ami = local.ami_id
     instance_type = "t2.micro"
-    vpc_security_group_ids = [local.catalogue_sg_id]
-    subnet_id = local.private_subnet_id
+    vpc_security_group_ids = [local.catalogue_sg_id] # taking the catalogue sg-id from 10-sg
+    subnet_id = local.private_subnet_id # taking the prviate_subnet_id from 00-VPC
     tags = merge(
         local.common_tags,
         {
@@ -30,7 +30,7 @@ resource "aws_instance" "catalogue" {
 
 resource "terraform_data" "catalogue" {
     triggers_replace = [
-        aws_instance.catalogue.id
+        aws_instance.catalogue.id # once catalogue instance is created then this will trigger 
     ]
 
     provisioner "file" {
@@ -42,12 +42,12 @@ resource "terraform_data" "catalogue" {
         type = "ssh"
         user = "ec2-user"
         password = "DevOps321"
-        host = aws_instance.catalogue.private_ip
+        host = aws_instance.catalogue.private_ip # connecting to the instance through private_ip bcoz catalogue component  is in private subnet
     }
     
     provisioner "remote-exec" {
         inline = [
-            "chmod +x /tmp/catalogue.sh",
+            "chmod +x /tmp/catalogue.sh", # executing this commands inside instance so using remote exec
             "sudo sh /tmp/catalogue.sh catalogue ${var.environment}"
         ]
     }
@@ -57,14 +57,14 @@ resource "terraform_data" "catalogue" {
 resource "aws_ec2_instance_state" "catalogue" {
     instance_id = aws_instance.catalogue.id
     state       = "stopped"
-    depends_on = [terraform_data.catalogue] # first configuration is done here then stopping the instance
+    depends_on = [terraform_data.catalogue] # first configuring the required dependenices and packages once that is done so this stopping the instance is depends on configuration 
 }
 
 # take ami id from catalogue instance
 resource "aws_ami_from_instance" "catalogue" {
     name = "${var.project}-${var.environment}-catalogue"
-    source_instance_id = aws_instance.catalogue.id  # id of the instance to use it as base AMI Image
-    depends_on = [aws_ec2_instance_state.catalogue]
+    source_instance_id = aws_instance.catalogue.id  # id of the instance to use it as base AMI Image, taking this from catalogue instance
+    depends_on = [aws_ec2_instance_state.catalogue] # this ami will be take once the instance is stopped here so this ami is dependent on stopping the instance
     tags = merge(
         local.common_tags,
         {
@@ -82,11 +82,13 @@ resource "terraform_data" "catalogue_delete" {
 
   # make sure you have aws configure in your laptop
     provisioner "local-exec" {
-        command = "aws ec2 terminate-instances --instance-ids ${aws_instance.catalogue.id}" 
+        command = "aws ec2 terminate-instances --instance-ids ${aws_instance.catalogue.id}" # deleting the instances
     }
-    depends_on = [aws_ami_from_instance.catalogue]
+    depends_on = [aws_ami_from_instance.catalogue] # once it takes ami it will delete it
 }
 
+# here not creating the route53 record for catalogue bcoz it is already declared in alb like when user hits *.backend-dev.pavithra.fun 
+# then it will forward it based on that *. so here using catalogue instead of *. for catalogue component i.e. catalogue-dev.pavithra.fun
 
 # resource "aws_route53_record" "catalogue" {
 #     zone_id = var.route53_zone_id

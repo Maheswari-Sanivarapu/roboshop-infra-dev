@@ -16,10 +16,10 @@ after getting the security group id it will store that security group id  in aws
 
 
 --> Here Creating the security groups for bastion server/ec2-instance,load balancer(allowing sg-id of bastion and openvpn),openvpn(allowing only ingress ports on 22,443,1194,943),databases(monogodb,redis,rabbitmq,mysql)
-mongodb --> allowing ingress ports -->22,27017
-redis --> allowing ingress ports -->22,6379
-rabbitmq --> allowing ingress ports -->22,5672
-mysql --> allowing ingress ports -->22,3306
+mongodb --> allowing ingress ports -->22(openvpn),27017
+redis --> allowing ingress ports -->22(openvpn),6379
+rabbitmq --> allowing ingress ports -->22(openvpn),5672
+mysql --> allowing ingress ports -->22(openvpn),3306
 
 --> storing the sg-ids of bastion,load balancer,openvpn,databases on ssm parameter store on aws
 
@@ -34,3 +34,4 @@ creating the security group id for catalogue component using module and allowing
 3. catalogue_bastion (bastion to catalogue) --> 22 to connect from bastion to catalague. here bastion to catalogue so source_security_group_id is bastion and security_group_id is catalogue
 4. catalogue_vpn_http catalogue to vpn --> 8080 we can hit the url directly in the browser by using catalague to vpn connection and it will connect to application directly. here openvpn to catalogue so source_security_group_id is openvpn and security_group_id is catalogue
 5. catalogue_mongodb --> here allowing the connection to mongodb from catalogue. bcoz in catalogue component we are connecting to mongodb. here catalogue to mongodb so source_security_group_id is catalogue and security_group_id is mongodb
+--> here catalogue will accept connection from vpn and load balancer vpn ---> lb --->catalogue

@@ -13,3 +13,5 @@ database_private_subnet_id --> taking the value from 00-VPC and the value is kep
     3. here using remote-exec provisioner to give permission to execute and install the databases(mongodb,mysql,rabbitmq,redis)
 
 --> creating the route53 records for databases which includes mongodb,redis,mysql,rabbitmq using privat-ip
+
+--> here trigger_replace will refresh the value when there is change in the value and replace with new value

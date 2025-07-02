@@ -13,7 +13,7 @@ resource "aws_instance" "mongodb" {
 
 resource "terraform_data" "mongodb" { # terraform_Data is used to connect to specific instance and it won't create any new instance
     triggers_replace = [ 
-        aws_instance.mongodb.id # once the instance is created we are connecting to that instance 
+        aws_instance.mongodb.id # once the instance is created we are connecting to that instance so here trigger replace will replace the mongo id with new value when there is a change
     ]
 
     connection { 

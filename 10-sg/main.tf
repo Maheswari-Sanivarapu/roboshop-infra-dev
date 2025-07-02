@@ -158,7 +158,7 @@ resource "aws_security_group_rule" "vpn_943" {
     security_group_id = module.openvpn.sg_id
 }
 
-#mongodb ports
+#mongodb port from openvpn
 resource "aws_security_group_rule" "mongodb_ports_vpn" {
     count = length(var.mongodb_ports_vpn)
     type = "ingress"
@@ -169,7 +169,7 @@ resource "aws_security_group_rule" "mongodb_ports_vpn" {
     security_group_id = module.mongodb.sg_id
 }
 
-#redis ports
+#redis ports from openvpn
 resource "aws_security_group_rule" "redis_ports_vpn" {
     count = length(var.redis_ports_vpn)
     type = "ingress"
@@ -180,7 +180,7 @@ resource "aws_security_group_rule" "redis_ports_vpn" {
     security_group_id = module.redis.sg_id
 }
 
-#mysql ports
+#mysql ports from openvpn
 resource "aws_security_group_rule" "mysql_ports_vpn" {
     count = length(var.mysql_ports_vpn)
     type = "ingress"
@@ -191,8 +191,7 @@ resource "aws_security_group_rule" "mysql_ports_vpn" {
     security_group_id = module.mysql.sg_id
 }
 
-#rabbitmq ports
-#mysql ports
+#rabbitmq ports from openvpn
 resource "aws_security_group_rule" "rabbitmq_ports_vpn" {
     count = length(var.rabbitmq_ports_vpn)
     type = "ingress"
