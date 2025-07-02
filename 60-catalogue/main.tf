@@ -149,7 +149,7 @@ resource "aws_autoscaling_group" "catalogue" {
         id = aws_launch_template.catalogue.id
         version = aws_launch_template.catalogue.latest_version
      }
-     dynamic "tags" {
+     dynamic "tag" {
         for_each = merge(
             local.common_tags,
             {
@@ -187,13 +187,13 @@ resource "aws_autoscaling_policy" "catalogue" {
   }
 }
 
-resource "aws_lb_listener" "listener" {
+resource "aws_lb_listener_rule" "listener" {
     listener_arn = local.backend_alb_listener_arn
     priority     = 10
     action {
     type             = "forward"
     target_group_arn = aws_lb_target_group.catalogue.arn
-  }
+    }
     condition {
         host_header {
             values = ["catalogue.backend-${var.environment}.${var.route53_domain_name}"]
