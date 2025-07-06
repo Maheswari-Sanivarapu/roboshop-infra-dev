@@ -26,7 +26,7 @@ resource "aws_lb_listener" "backend_alb_listener" {
         type = "fixed-response"
         fixed_response {
             content_type = "text/plain"
-            message_body = "<h1>I'm From ALB</h1>"
+            message_body = "<h1>Hi,I'm From Backend ALB</h1>"
             status_code  = "200"
         }
     }

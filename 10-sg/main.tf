@@ -33,6 +33,15 @@ module "backend_alb" {
     vpc_id = local.vpc_id
 }
 
+module "frontend_alb" {
+    source = "git::https://github.com/mahi2298/terraform-aws-security-group-module.git?ref=main"
+    project = var.project
+    environment = var.environment
+    sg_name = "frontend-alb"
+    sg_description = "frontend-application-load-balancer"
+    vpc_id = local.vpc_id
+}
+
 module "openvpn" {
     source ="git::https://github.com/mahi2298/terraform-aws-security-group-module.git?ref=main"
     project = var.project
@@ -252,3 +261,44 @@ resource "aws_security_group_rule" "catalogue_mongodb" {
     source_security_group_id = module.catalogue.sg_id
     security_group_id = module.mongodb.sg_id
 }
+
+# frontend_alb on http port
+resource "aws_security_group_rule" "frontend_alb_http" {
+    type = "ingress"
+    from_port = 80
+    to_port = 80
+    protocol = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+    security_group_id = module.frontend_alb.sg_id
+}
+
+# frontend_alb on https port
+resource "aws_security_group_rule" "frontend_alb_https" {
+    type = "ingress"
+    from_port = 443
+    to_port = 443
+    protocol = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+    security_group_id = module.frontend_alb.sg_id
+}
+
+# frontend_alb to frontend
+resource "aws_security_group_rule" "frontend_frontend_alb" {
+    type = "ingress"
+    from_port = 80
+    to_port = 80
+    protocol = "tcp"
+    source_security_group_id = module.frontend_alb.sg_id
+    security_group_id = module.frontend.sg_id
+}
+
+# openvpn to frontend
+resource "aws_security_group_rule" "frontend_openvpn" {
+    type = "ingress"
+    from_port = 22
+    to_port = 22
+    protocol = "tcp"
+      source_security_group_id = module.openvpn.sg_id
+    security_group_id = module.frontend.sg_id
+}
+

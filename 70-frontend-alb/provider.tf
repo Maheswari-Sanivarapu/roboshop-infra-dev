@@ -7,7 +7,7 @@ terraform {
   }
 backend "s3"{
     bucket = "mahi-s3-bucket-dev"
-    key = "remote-state-dev-backend-alb"
+    key = "remote-state-dev-frontend-alb"
     region = "us-east-1"
     encrypt = true 
     use_lockfile = true

@@ -12,9 +12,22 @@
     - shipping
     - payment
   - BACKEND_ALB:
+    - name : backend_alb_catalogue
+      purpose: catalogue should accept traffic on 8080 from backend_alb
   - FRONTEND:
+    - name : openvpn_frontend
+      purpose: frontend should accept traffic on 22 from vpn
+    - name : frontend_alb_frontend
+      purpose: frontend should accept traffic on 80 from frontend_alb
   - FRONTEND_ALB:
+    - name : frontend_alb_frontend
+      purpose: frontend should accept traffic on 80 from frontend_alb
   - VPN:
+    - name : openvpn_frontend
+      purpose: frontend should accept traffic on 22 from vpn
+    - name : openvpn_catalogue
+      purpose: catalogue should accept traffic on 22,8080 from vpn
+      
   - BASTION:
   mongodb:
   - name: mongodb_vpn
