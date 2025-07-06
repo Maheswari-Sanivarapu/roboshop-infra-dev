@@ -20,8 +20,8 @@ module "backend_alb" {
 # creating the listener and attaching it to alb
 resource "aws_lb_listener" "backend_alb_listener" {
     load_balancer_arn = module.backend_alb.arn # taking the alb arn id in order to connect to alb
-    port = "80"
-    protocol = "HTTP"
+    port = "80" # port of load balancer 
+    protocol = "HTTP" # the listener will listen on HTTP rule
     default_action {
         type = "fixed-response"
         fixed_response {

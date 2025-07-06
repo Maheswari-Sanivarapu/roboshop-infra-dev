@@ -1,7 +1,7 @@
 resource "aws_lb_target_group" "catalogue" {
     name = "${var.project}-${var.environment}-catalogue"
     port = 8080 # here for catalogue  port 8080 will be allowed here backend component runs on port 8080
-    protocol = "HTTP" # load balancer will hit
+    protocol = "HTTP" # load balancer will hit on this protocol for catalogue to allow
     vpc_id = local.vpc_id
     health_check {
         healthy_threshold = 2 #Number of consecutive health check successes required before considering a target healthy. The range is 2-10. Defaults to 3.
@@ -163,7 +163,7 @@ resource "aws_autoscaling_group" "catalogue" {
         }
     }
      instance_refresh {
-        strategy = "Rolling" # here once we got launch_template creating one instance and deleting one instance like rolling update
+        strategy = "Rolling" # here once we got launch_template based on demand it will automatically increase/decrease the instances using rolling update
         preferences {
         min_healthy_percentage = 50
         }

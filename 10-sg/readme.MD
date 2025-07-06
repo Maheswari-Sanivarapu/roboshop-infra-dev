@@ -16,6 +16,15 @@ after getting the security group id it will store that security group id  in aws
 
 
 --> Here Creating the security groups for bastion server/ec2-instance,load balancer(allowing sg-id of bastion and openvpn),openvpn(allowing only ingress ports on 22,443,1194,943),databases(monogodb,redis,rabbitmq,mysql)
+
+## openvpn
+
+
+## load balancer:
+it should connection on ports from openvpn on port 22 and also from bastion on port 80 as incoming connection
+
+
+## Databases
 mongodb --> allowing ingress ports -->22(openvpn),27017
 redis --> allowing ingress ports -->22(openvpn),6379
 rabbitmq --> allowing ingress ports -->22(openvpn),5672
@@ -27,7 +36,7 @@ mysql --> allowing ingress ports -->22(openvpn),3306
 
 --> for databases(monogodb,redis,rabbitmq,mysql) source_security_group_id is openvpn sg-id
 
-catalogue:
+## catalogues:
 creating the security group id for catalogue component using module and allowing the below incoming traffic to catalogue
 1. catalogue_backend_alb (backend_alb to catalogue) --> catalogue should allow connection from backend_alb on port 8080. here backend_alb to catalogue so source_security_group_id is backend_alb and security_group_id is catalogue
 2. catalogue_openvpn (openvpn to catalogue) --> catalogue show allow connection from vpn on port 22 in order to configure the component in catalogue we should be connect to vpn then only we can do configuration in catalogue bcoz catalogue is in private subnet and it need public connection. here openvpn to catalogue so source_security_group_id is openvpn and security_group_id is catalogue
@@ -35,3 +44,8 @@ creating the security group id for catalogue component using module and allowing
 4. catalogue_vpn_http catalogue to vpn --> 8080 we can hit the url directly in the browser by using catalague to vpn connection and it will connect to application directly. here openvpn to catalogue so source_security_group_id is openvpn and security_group_id is catalogue
 5. catalogue_mongodb --> here allowing the connection to mongodb from catalogue. bcoz in catalogue component we are connecting to mongodb. here catalogue to mongodb so source_security_group_id is catalogue and security_group_id is mongodb
 --> here catalogue will accept connection from vpn and load balancer vpn ---> lb --->catalogue
+
+              80                   8080                      
+--> openvpn ------> load balancer -----> catalogue
+
+same for other components as well like user,cart,payment,shipping
