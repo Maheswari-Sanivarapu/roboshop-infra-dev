@@ -31,7 +31,7 @@ VPN hits ALB (on Port 80) --> ALB forwards the request to Catalogue (on Port 808
 -->Once the AMI ID is taken do launch template using that AMI-id and pass image-id of the deleted instance,instance_type,name,sg-id of instance,instance_initiated_shutdown_behavior like stop or terminate, tags_specification to create instance and volume is attached to the instance add it under tags_specification,resource_type is instance
 --> Create autoscaling group --> it requires desired_capacity, min_size,max_size,health_check_grace_period,availability_zones,launch_template,delete,auto-refresh when new launch_template is taken. here specifying the max and min size to increase/decrease instances and adding the instance to target group
 --> Create autoscaling policy and attach it to autoscaling group --> autoscaling group name,policy_type,target_tracking
---> Add rule in Listener --> listener arn,condition(when certain condition is met),then action(forward to target group),
+--> Add rule in Listener --> listener arn,condition(when certain condition is met),then action(forward to target group)
 --> Here creating the target group but not adding the instance to it,so here we are creating the autoscaling group and attaching the target group and instance to it. based on the demand the autoscaling will increase/decrease the load
 ---> create autoscaling policy :- based on this autoscale policy only it will autoscale the instances, if suppose cpu utilization is more than 75 then it will increase the load
 
