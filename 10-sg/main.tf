@@ -269,7 +269,7 @@ resource "aws_security_group_rule" "catalogue_openvpn_ssh" {
 }
 
 #openvpn to catalogue http port directly on 8080
-resource "aws_security_group_rule" "catalogue_openvpn_ssh" {
+resource "aws_security_group_rule" "catalogue_openvpn_http" {
     type = "ingress"
     from_port = 8080
     to_port = 8080
@@ -457,7 +457,7 @@ resource "aws_security_group_rule" "backend_alb_shipping" {
 }
 
 # backend_alb to shipping to on port 8080 
-resource "aws_security_group_rule" "backend_alb_shipping" {
+resource "aws_security_group_rule" "shipping_backend_alb" {
     type = "ingress"
     from_port = 8080
     to_port = 8080
@@ -467,7 +467,7 @@ resource "aws_security_group_rule" "backend_alb_shipping" {
 }
 
 # openvpn to shipping on port 8080 to connect directly to shipping component
-resource "aws_security_group_rule" "cart_openvpn_http" {
+resource "aws_security_group_rule" "shipping_openvpn_http" {
     type = "ingress"
     from_port = 8080
     to_port = 8080
