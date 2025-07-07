@@ -33,7 +33,7 @@ resource "aws_lb_listener" "backend_alb_listener" {
 }
 
 #creating the route53 for load balancer bcoz here lb is having big DNS Name so adding the DNS Name in route53 record
-resource "aws_route53_record" "loadbalancer" {
+resource "aws_route53_record" "route53_backend_alb" {
   zone_id = var.route53_zone_id # take zone id from route53
   name    = "*.backend-${var.environment}.${var.route53_domain_name}" # take domain name from route53
   type    = "A"

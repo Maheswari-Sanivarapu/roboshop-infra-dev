@@ -6,7 +6,7 @@ module "frontend_alb" {
     subnets = local.public_subnet_ids
     vpc_id = local.vpc_id
     create_security_group = false
-    security_groups = [local.frontend_alb.sg_id]
+    security_groups = [local.frontend_alb]
     enable_deletion_protection = false
     tags = merge(
         local.common_tags,
@@ -32,13 +32,13 @@ resource "aws_lb_listener" "frontend_alb_listener" {
     }
 }
 
-resource "aws_route53_record" "frontend_alb" {
+resource "aws_route53_record" "route53_frontend_alb" {
     zone_id = var.route53_zone_id
     name = "*.${var.route53_domain_name}" # *.pavithra.fun
     type = "A"
     alias {
-        name = module.frontend_alb.arn
-        zone_id = module.frontend_alb.zone_id  # zone-id of ALB
-        evaluate_target_health = true
+     name = module.frontend_alb.dns_name
+     zone_id = module.frontend_alb.zone_id  # zone-id of ALB
+     evaluate_target_health = true
     }
 }
