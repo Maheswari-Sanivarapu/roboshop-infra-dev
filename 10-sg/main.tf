@@ -328,6 +328,17 @@ resource "aws_security_group_rule" "frontend_frontend_alb" {
     security_group_id = module.frontend.sg_id
 }
 
+# frontend to backend_alb
+resource "aws_security_group_rule" "backend_alb_frontend" {
+    type = "ingress"
+    from_port = 80
+    to_port = 80
+    protocol = "tcp"
+    source_security_group_id = module.frontend.sg_id
+    security_group_id = module.backend_alb.sg_id
+}
+
+
 # openvpn to frontend
 resource "aws_security_group_rule" "frontend_openvpn" {
     type = "ingress"
