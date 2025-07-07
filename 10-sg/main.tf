@@ -391,7 +391,14 @@ resource "aws_security_group_rule" "user_openvpn_http" {
     security_group_id = module.user.sg_id
 }
 
-
+resource "aws_security_group_rule" "user_backend_alb" {
+    type = "ingress"
+    from_port = 8080
+    to_port = 8080
+    protocol = "tcp"
+    source_security_group_id = module.backend_alb.sg_id
+    security_group_id = module.user.sg_id
+}
 # cart component 
 # cart component Dependent on redis and catalogue
 # cart to redis on 6379
