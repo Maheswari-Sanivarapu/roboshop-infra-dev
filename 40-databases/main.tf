@@ -84,7 +84,7 @@ resource "aws_instance" "mysql" {
     instance_type = "t2.micro"
     vpc_security_group_ids = [local.mysql_sg_id]
     subnet_id = local.database_subnet_id
-    iam_instance_profile = "EC2toFetchssmparameters" # this IAM role is used to fetch the Mysql password from ssm parameter store in aws,
+    iam_instance_profile = "EC2toFetchSSMParametee" # this IAM role is used to fetch the Mysql password from ssm parameter store in aws,
 #so creating IAM Role with ec2 service to connect to ssm parameter to fetch mysql password and attaching this role to MYSQL EC2 Instance and this EC2 instance will take password from aws
     tags = merge(
         local.common_tags,
