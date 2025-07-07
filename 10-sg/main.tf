@@ -96,6 +96,41 @@ module "catalogue" {
     vpc_id = local.vpc_id
 }
 
+module "user" {
+    source = "git::https://github.com/mahi2298/terraform-aws-security-group-module.git?ref=main"
+    project = var.project
+    environment = var.environment
+    sg_name = "user"
+    sg_description = "for user connection"
+    vpc_id = local.vpc_id
+}
+
+module "cart" {
+    source = "git::https://github.com/mahi2298/terraform-aws-security-group-module.git?ref=main"
+    project = var.project
+    environment = var.environment
+    sg_name = "cart"
+    sg_description = "for cart connection"
+    vpc_id = local.vpc_id
+}
+
+module "shipping" {
+    source = "git::https://github.com/mahi2298/terraform-aws-security-group-module.git?ref=main"
+    project = var.project
+    environment = var.environment
+    sg_name = "shipping"
+    sg_description = "for shipping connection"
+    vpc_id = local.vpc_id
+}
+
+module "payment" {
+    source = "git::https://github.com/mahi2298/terraform-aws-security-group-module.git?ref=main"
+    project = var.project
+    environment = var.environment
+    sg_name = "payment"
+    sg_description = "for payment connection"
+    vpc_id = local.vpc_id
+}
 
 # giving connection from laptop to bastion by creating the security group for basiton and allowing only incoming traffic on port 22 for bastion
 resource "aws_security_group_rule" "bastion_laptop" {
@@ -120,7 +155,7 @@ resource "aws_security_group_rule" "backend_alb_bastion" {
 }
 
 # making the connection from load balancer to openvpn in order to make the connection
-resource "aws_security_group_rule" "loadbalancer_openvpn" {
+resource "aws_security_group_rule" "backend_alb_openvpn" {
     type = "ingress"
     from_port = 80
     to_port = 80
@@ -211,6 +246,7 @@ resource "aws_security_group_rule" "rabbitmq_ports_vpn" {
     security_group_id = module.rabbitmq.sg_id
 }
 
+
 #catalogue ports 
 #alb to catalogue port 8080
 resource "aws_security_group_rule" "backend_alb_catalogue" {
@@ -223,7 +259,7 @@ resource "aws_security_group_rule" "backend_alb_catalogue" {
 }
 
 #openvpn to catalogue ssh port 22
-resource "aws_security_group_rule" "openvpn_catalogue_ssh" {
+resource "aws_security_group_rule" "catalogue_openvpn_ssh" {
     type = "ingress"
     from_port = 22
     to_port = 22
@@ -233,7 +269,7 @@ resource "aws_security_group_rule" "openvpn_catalogue_ssh" {
 }
 
 #openvpn to catalogue http port directly on 8080
-resource "aws_security_group_rule" "openvpn_catalogue_http" {
+resource "aws_security_group_rule" "catalogue_openvpn_ssh" {
     type = "ingress"
     from_port = 8080
     to_port = 8080
@@ -298,7 +334,206 @@ resource "aws_security_group_rule" "frontend_openvpn" {
     from_port = 22
     to_port = 22
     protocol = "tcp"
-      source_security_group_id = module.openvpn.sg_id
+    source_security_group_id = module.openvpn.sg_id
     security_group_id = module.frontend.sg_id
 }
 
+#user component
+# user component Dependent on mongodb and redis
+# user to mongodb 
+resource "aws_security_group_rule" "mongodb_user" {
+    type = "ingress"
+    from_port = 27017
+    to_port = 27017
+    protocol = "tcp"
+    source_security_group_id = module.user.sg_id
+    security_group_id = module.mongodb.sg_id
+}
+
+# user to redis on 6379
+resource "aws_security_group_rule" "redis_user" {
+    type = "ingress"
+    from_port = 6379
+    to_port = 6379
+    protocol = "tcp"
+    source_security_group_id = module.user.sg_id
+    security_group_id = module.redis.sg_id
+}
+
+# openvpn to user on port 22 to configure user component
+resource "aws_security_group_rule" "user_openvpn_ssh" {
+    type = "ingress"
+    from_port = 22
+    to_port = 22
+    protocol = "tcp"
+    source_security_group_id = module.openvpn.sg_id
+    security_group_id = module.user.sg_id
+}
+
+# openvpn to user on port 8080 to connect directly to user component
+resource "aws_security_group_rule" "user_openvpn_http" {
+    type = "ingress"
+    from_port = 8080
+    to_port = 8080
+    protocol = "tcp"
+    source_security_group_id = module.openvpn.sg_id
+    security_group_id = module.user.sg_id
+}
+
+
+# cart component 
+# cart component Dependent on redis and catalogue
+# cart to redis on 6379
+resource "aws_security_group_rule" "redis_cart"{
+    type = "ingress"
+    from_port = 6379
+    to_port = 6379
+    protocol = "tcp"
+    source_security_group_id = module.cart.sg_id
+    security_group_id = module.redis.sg_id
+}
+
+
+# openvpn to cart on port 8080 to connect directly to cart component
+resource "aws_security_group_rule" "cart_openvpn_http" {
+    type = "ingress"
+    from_port = 8080
+    to_port = 8080
+    protocol = "tcp"
+    source_security_group_id = module.openvpn.sg_id
+    security_group_id = module.cart.sg_id
+}
+
+# openvpn to cart on port 22 to configure the cart component
+resource "aws_security_group_rule" "cart_openvpn_ssh" {
+    type = "ingress"
+    from_port = 22
+    to_port = 22
+    protocol = "tcp"
+    source_security_group_id = module.openvpn.sg_id
+    security_group_id = module.cart.sg_id
+}
+
+# backend_alb to cart component on 8080
+resource "aws_security_group_rule" "cart_backend_alb" {
+    type = "ingress"
+    from_port = 8080
+    to_port = 8080
+    protocol = "tcp"
+    source_security_group_id = module.backend_alb.sg_id
+    security_group_id = module.cart.sg_id
+}
+
+# cart to backend_alb on port 80 and then backend_alb to catalogue on port 8080
+resource "aws_security_group_rule" "backend_alb_cart" {
+    type = "ingress"
+    from_port = 80
+    to_port = 80
+    protocol = "tcp"
+    source_security_group_id = module.cart.sg_id
+    security_group_id = module.backend_alb.sg_id
+}
+
+#shipping component
+# shipping component Dependent on cart and mysql
+# shipping to mysql on port 3306 bcoz shipping is dependent on mysql
+resource "aws_security_group_rule" "mysql_shipping" {
+    type = "ingress"
+    from_port = 3306
+    to_port = 3306
+    protocol = "tcp"
+    source_security_group_id = module.shipping.sg_id
+    security_group_id = module.mysql.sg_id
+}
+
+# shipping to backend_alb on port 80 and then from backend_alb to cart on port 8080
+resource "aws_security_group_rule" "backend_alb_shipping" {
+    type = "ingress"
+    from_port = 80
+    to_port = 80
+    protocol = "tcp"
+    source_security_group_id = module.shipping.sg_id
+    security_group_id = module.backend_alb.sg_id
+}
+
+# backend_alb to shipping to on port 8080 
+resource "aws_security_group_rule" "backend_alb_shipping" {
+    type = "ingress"
+    from_port = 8080
+    to_port = 8080
+    protocol = "tcp"
+    source_security_group_id = module.backend_alb.sg_id
+    security_group_id = module.shipping.sg_id
+}
+
+# openvpn to shipping on port 8080 to connect directly to shipping component
+resource "aws_security_group_rule" "cart_openvpn_http" {
+    type = "ingress"
+    from_port = 8080
+    to_port = 8080
+    protocol = "tcp"
+    source_security_group_id = module.openvpn.sg_id
+    security_group_id = module.shipping.sg_id
+}
+
+# openvpn to shipping on port 22  to configure the shipping component
+resource "aws_security_group_rule" "shipping_openvpn_ssh" {
+    type = "ingress"
+    from_port = 22
+    to_port = 22
+    protocol = "tcp"
+    source_security_group_id = module.openvpn.sg_id
+    security_group_id = module.shipping.sg_id
+}
+
+#payment component
+# payment component is dependent on cart,user,rabbitmq
+#payment to rabbitmq on port 5672
+resource "aws_security_group_rule" "rabbitmq_payment" {
+    type = "ingress"
+    from_port = 5672
+    to_port = 5672
+    protocol = "tcp"
+    source_security_group_id = module.payment.sg_id
+    security_group_id = module.rabbitmq.sg_id
+}
+
+# openvpn to shipping on port 8080 to connect directly to payment component
+resource "aws_security_group_rule" "payment_openvpn_http" {
+    type = "ingress"
+    from_port = 8080
+    to_port = 8080
+    protocol = "tcp"
+    source_security_group_id = module.openvpn.sg_id
+    security_group_id = module.payment.sg_id
+}
+
+# openvpn to shipping on port 22 directly to configure the payment component
+resource "aws_security_group_rule" "payment_openvpn_ssh" {
+    type = "ingress"
+    from_port = 22
+    to_port = 22
+    protocol = "tcp"
+    source_security_group_id = module.openvpn.sg_id
+    security_group_id = module.payment.sg_id
+}
+
+# backend_alb to payment on port 8080
+resource "aws_security_group_rule" "payment_backend_alb" {
+    type = "ingress"
+    from_port = 8080
+    to_port = 8080
+    protocol = "tcp"
+    source_security_group_id = module.backend_alb.sg_id
+    security_group_id = module.payment.sg_id
+}
+
+#payment to backend_alb on port 80 and then from backend_alb to payment on port 8080
+resource "aws_security_group_rule" "backend_alb_payment" {
+    type = "ingress"
+    from_port = 80
+    to_port = 80
+    protocol = "tcp"
+    source_security_group_id = module.payment.sg_id
+    security_group_id = module.backend_alb.sg_id
+}

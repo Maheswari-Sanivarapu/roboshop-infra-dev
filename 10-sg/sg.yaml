@@ -19,9 +19,14 @@
       purpose: frontend should accept traffic on 22 from vpn
     - name : frontend_alb_frontend
       purpose: frontend should accept traffic on 80 from frontend_alb
+    - name :
   - FRONTEND_ALB:
     - name : frontend_alb_frontend
       purpose: frontend should accept traffic on 80 from frontend_alb
+    - name : frontend_alb_https
+      purpose: frontend_alb_https on port 44
+    - name : frontend_alb_http
+      purpose: frontend_alb_http on port 8080      
   - VPN:
     - name : openvpn_frontend
       purpose: frontend should accept traffic on 22 from vpn
@@ -59,6 +64,46 @@
 
   catalogue:
   - name: catalogue_vpn
-    purpose: catalogue should accept traffic on 22 from vpn
+    purpose: catalogue should accept traffic on 22,8080 from vpn
   - name: catalogue_backend_alb
     purpose: catalogue should accept traffic on 8080 from backend_alb
+
+  user: 
+  # user component Dependent on mongodb and redis
+  - name: user_vpn
+    purpose: user should accept traffic on 22,8080 from vpn
+  - name: mongodb_user
+    purpose: mongodb should accept traffic on 27017 from user
+
+  cart:
+   # cart component Dependent on redis and catalogue
+  - name: cart_vpn
+    purpose: cart should accept incoming traffic on 22,8080 from vpn
+  - name: redis_cart
+    purpose: redis should accept traffic on 6379 from cart
+  - name: cart_backend_alb_catalogue
+    purpose: backend_alb should accept incoming traffic on 80 from cart and from backend_alb to catalogue on port 8080
+  - name: backend_alb_cart
+    purpose: cart should accept incoming traffic on 8080 from backend_alb
+
+  shipping:
+   # shipping component Dependent on cart and mysql
+  - name: shipping_vpn
+    purpose: shipping should accept incoming traffic on 22,8080 from vpn
+  - name: shipping_mysql
+    purpose: mysql should accept incoming traffic on 3306 from shipping
+  - name: shipping_backend_alb_catalogue
+    purpose: backend_alb should accept incoming traffic on 80 from shipping and from backend_alb to cart on port 8080
+  - name: backend_alb_shipping
+    purpose: cart should accept incoming traffic on 8080 from backend_alb
+
+  payment:
+  # payment component is dependent on cart,user,rabbitmq
+  - name: payment_vpn
+    purpose: payment should accept incoming traffic on 22,8080 from vpn
+  - name: payment_rabbitmq
+    purpose: rabbitmq should accept incoming traffic on 5672 from payment
+  - name: payment_backend_alb_catalogue
+    purpose: backend_alb should accept incoming traffic on 80 from payment and from backend_alb to cart,user on port 8080
+  - name: backend_alb_payment
+    purpose: payment should accept incoming traffic on 8080 from backend_alb
