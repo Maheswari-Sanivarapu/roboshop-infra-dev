@@ -22,7 +22,7 @@ resource "aws_lb_listener" "frontend_alb_listener" {
     protocol = "HTTPS"
     ssl_policy        = "ELBSecurityPolicy-2016-08"
     certificate_arn   = local.acm_certificate_arn
-     default_action {
+     default_action { 
         type = "fixed-response"
         fixed_response {
             content_type = "text/plain"
@@ -34,7 +34,7 @@ resource "aws_lb_listener" "frontend_alb_listener" {
 
 resource "aws_route53_record" "route53_frontend_alb" {
     zone_id = var.route53_zone_id
-    name = "*.${var.route53_domain_name}" # *.pavithra.fun
+    name = "${var.environment}.${var.route53_domain_name}" # dev.pavithra.fun
     type = "A"
     alias {
      name = module.frontend_alb.dns_name
