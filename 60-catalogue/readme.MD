@@ -43,3 +43,51 @@ Launch template --> Autoscaling group --> LB --> Listener --> target group --> i
 
 
 --> here trigger_replace is used whenever there is change in instance-id this trigger_replace will refresh with new instance-id and ask provisioner to do configuration with this new instance id 
+
+
+## to run specific component we can use this
+terraform plan -target='module.component["catalogue"]'
+terraform apply -target='module.component["catalogue"]'
+
+
+Quiz Questions:-
+# what is the purpose of null_resource provisioner in terraform ?
+To Run local scripts  ( it is used to plan and run the local/remote scripts and it won't create any new resource in terraform)
+
+## How can you stop ec2 instance in terraform?
+by changing instance state to stopped and it don't have stop_instance
+
+## what does autoscaling group do in terraform?
+it automates instance scaling
+
+## How do you connect to 2 VPCS?
+VPC Peering with diff CIDR
+
+## How do you create an HTTPS Listener in terraform?
+resource "aws_lb_listener" (based on the ports opened it will decide wheather it is HTTP or HTTPS)
+
+## What is a frontend component in terraform?
+ELB Listener ( from ELB Listener --> Frontend component)
+
+## how do you get existing info from provider?
+using data source
+
+## what is listener rule in terraform?
+routing rule (bcoz it routes the request to specific target group)
+
+## in terraform while defining VPC in AWS, which of the following CIDR blocks Provides largest number of available IP addresses?
+10.0.0.0/24
+10.0.0.0/16 --> this will provide less IP addresses
+172.31.0.0/20
+192.68.0.0/18
+
+## what should be a basic VPC Module include?
+VPC,subnets,route tables and internet gateway
+
+## what is an Internet Gateway in AWS?
+A resource to allow VPC communication with the internet
+
+## When module developers update it how to get updates?
+terraform init -upgrade
+
+
