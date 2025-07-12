@@ -45,6 +45,7 @@ Launch template --> Autoscaling group --> LB --> Listener --> target group --> i
 --> here trigger_replace is used whenever there is change in instance-id this trigger_replace will refresh with new instance-id and ask provisioner to do configuration with this new instance id 
 
 
+
 ## to run specific component we can use this
 terraform plan -target='module.component["catalogue"]'
 terraform apply -target='module.component["catalogue"]'

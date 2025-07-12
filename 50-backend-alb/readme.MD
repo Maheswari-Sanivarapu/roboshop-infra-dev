@@ -23,3 +23,10 @@ getting load balancer arn and giving it as input to listener
     creating the record with alias
     taking the zone-id and name taking it from route53 in aws
     taking the zone-id and name inside alias from newly created load balancer
+
+for frontend-alb --> 443,HTTPS
+frontend component --> 80,HTTP
+for backend-alb -->80
+for backend component --> 80
+
+everything from frontend component is HTTP only and it is internal and only frontend_alb is HTTPS
