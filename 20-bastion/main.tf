@@ -3,6 +3,7 @@ resource "aws_instance" "bastion" {
     instance_type = "t2.micro"
     vpc_security_group_ids = [local.bastion_sg_id]
     subnet_id = local.public_subnet_id # creating the bastion in public subnet
+    user_data = file("bastion.sh")
     tags = merge (
         local.common_tags,
         {
